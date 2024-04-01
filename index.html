@@ -1,0 +1,43 @@
+<html>
+
+<head>
+    <title>PC Controller</title>
+    <script src="index.js"></script>
+</head>
+
+<body>
+    <div>
+        PC is <span id="pc_state"></span>
+        <button id="pc_button">
+            Turn on pc
+        </button>
+        <div id="pc_message" style="display: none;">
+            Turning PC on...
+        </div>
+    </div>
+    <div id="reset_panel" style="display: none;">
+        <button id="reset_button">
+            Send reset signal
+        </button>
+        <div id="reset_message" style="display: none;">
+            Resetting PC...
+        </div>
+    </div>
+
+    <style>
+        :root {
+            font-size: 20px;
+        }
+
+        button {
+            font-size: 1rem;
+        }
+
+        div {
+            margin-inline: .25rem;
+            margin-block: .5rem;
+        }
+    </style>
+</body>
+
+</html>
