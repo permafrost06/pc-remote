@@ -11,6 +11,7 @@ const port = 8000
 type State struct {
     pc bool
     to_turn_on bool
+    to_press_pwr_button bool
     to_reset bool
 }
 
@@ -35,7 +36,7 @@ type State struct {
 //     w.Header().Set("Access-Control-Allow-Origin", "*")
 // }
 
-var state = State{false, false, false}
+var state = State{false, false, false, false}
 
 func main() {
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -56,6 +57,11 @@ func main() {
 
     http.HandleFunc("/web/pc/request-power-on", func(w http.ResponseWriter, r *http.Request) {
         state.to_turn_on = true
+        fmt.Fprint(w, "requested")
+    })
+
+    http.HandleFunc("/web/pc/request-power-button-press", func(w http.ResponseWriter, r *http.Request) {
+        state.to_press_pwr_button = true
         fmt.Fprint(w, "requested")
     })
 
@@ -98,6 +104,19 @@ func main() {
     http.HandleFunc("/esp/pc/reset-request-fulfilled", func(w http.ResponseWriter, r *http.Request) {
         state.to_reset = false
         fmt.Fprint(w, "marked reset request as fulfilled")
+    })
+
+    http.HandleFunc("/esp/pc/check-power-button-request", func(w http.ResponseWriter, r *http.Request) {
+        if state.to_press_pwr_button {
+            fmt.Fprint(w, 1)
+        } else {
+            fmt.Fprint(w, 0)
+        }
+    })
+
+    http.HandleFunc("/esp/pc/power-button-request-fulfilled", func(w http.ResponseWriter, r *http.Request) {
+        state.to_press_pwr_button = false
+        fmt.Fprint(w, "marked button press request as fulfilled")
     })
 
 	fmt.Printf("Starting server on port %d\n", port)

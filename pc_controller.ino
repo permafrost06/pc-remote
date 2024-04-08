@@ -10,6 +10,8 @@ String getPCOnRequestURL = serverName + "/esp/pc/check-request";
 String markReqFulfilledURL = serverName + "/esp/pc/request-fulfilled";
 String getResetRequestURL = serverName + "/esp/pc/check-reset-request";
 String markResetReqFulfilledURL = serverName + "/esp/pc/reset-request-fulfilled";
+String getPowerButtonRequestURL = serverName + "/esp/pc/check-power-button-request";
+String markPowerButtonReqFulfilledURL = serverName + "/esp/pc/power-button-request-fulfilled";
 String markPCOnURL = serverName + "/esp/pc/mark-as-on";
 String markPCOffURL = serverName + "/esp/pc/mark-as-off";
 
@@ -43,6 +45,12 @@ void turnOnPC() {
     while (digitalRead(input5) != 0) {
         digitalWrite(output4, LOW);
     }
+    digitalWrite(output4, HIGH);
+}
+
+void pressPowerButton() {
+    digitalWrite(output4, LOW);
+    delay(500);
     digitalWrite(output4, HIGH);
 }
 
@@ -101,11 +109,18 @@ void loop() {
 
     if (!digitalRead(input5)) {
         bool resetReq = getPayloadAsBool(getResetRequestURL);
-        Serial.println("Turn on requested: " + resetReq);
+        Serial.println("Reset requested: " + resetReq);
         if (resetReq && !digitalRead(input5)) {
             resetPC();
             Serial.println(getPayload(markResetReqFulfilledURL));
         }
+    }
+
+    bool powerButtonReq = getPayloadAsBool(getPowerButtonRequestURL);
+    Serial.println("Power button press requested: " + powerButtonReq);
+    if (powerButtonReq) {
+        pressPowerButton();
+        Serial.println(getPayload(markPowerButtonReqFulfilledURL));
     }
     
     lastTime = millis();

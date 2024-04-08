@@ -26,5 +26,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         await fetch(baseURL + "/web/pc/request-reset");
     })
 
-    setInterval(main, 500);
+    pc_pwr_button.addEventListener("click", async () => {
+        await fetch(baseURL + "/web/pc/request-power-button-press");
+    });
+
+    setInterval(main, 2000);
 });
