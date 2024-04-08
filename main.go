@@ -47,7 +47,16 @@ func main() {
         http.ServeFile(w, r, "index.js")
     })
 
+    http.HandleFunc("/set-code", func(w http.ResponseWriter, r *http.Request) {
+        http.ServeFile(w, r, "code.html")
+    })
+
 	http.HandleFunc("/web/pc", func(w http.ResponseWriter, r *http.Request) {
+        if r.Header.Get("Secret-Code") != "abcd" {
+            w.WriteHeader(http.StatusUnauthorized)
+            return
+        }
+
         if state.pc {
             fmt.Fprintf(w, "on")
         } else {

@@ -2,8 +2,19 @@
 
 const baseURL = "http://localhost:8000";
 
+async function fetchWithCode(url) {
+    return await fetch(url, {
+        headers: {
+            "Secret-Code": localStorage.getItem("pc-remote-secret-code")
+        }
+    });
+}
+
 async function main() {
-    let res = await fetch(baseURL + "/web/pc");
+    let res = await fetchWithCode(baseURL + "/web/pc");
+    if (!res.ok) {
+        window.location = baseURL + "/set-code";
+    }
     pc_state.innerText = await res.text();
 
     if (pc_state.innerText === "on") {
@@ -19,15 +30,15 @@ async function main() {
 document.addEventListener("DOMContentLoaded", async () => {
     pc_button.addEventListener("click", async () => {
         pc_message.style.display = "inline-block";
-        await fetch(baseURL + "/web/pc/request-power-on");
+        await fetchWithCode(baseURL + "/web/pc/request-power-on");
     })
 
     reset_button.addEventListener("click", async () => {
-        await fetch(baseURL + "/web/pc/request-reset");
+        await fetchWithCode(baseURL + "/web/pc/request-reset");
     })
 
     pc_pwr_button.addEventListener("click", async () => {
-        await fetch(baseURL + "/web/pc/request-power-button-press");
+        await fetchWithCode(baseURL + "/web/pc/request-power-button-press");
     });
 
     setInterval(main, 2000);
