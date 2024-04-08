@@ -15,27 +15,6 @@ type State struct {
     to_reset bool
 }
 
-// func cors() {
-//      if r.Method != "POST" {
-//          fmt.Println("not POST or OPTIONS method, abort")
-//          http.Error(w, "method not supported", http.StatusBadRequest)
-//          return
-//      }
-//
-//     if r.Method == "OPTIONS" {
-//         fmt.Println("OPTIONS request received")
-//         w.Header().Add("Connection", "keep-alive")
-//         w.Header().Add("Access-Control-Allow-Origin", "*")
-//         w.Header().Add("Access-Control-Allow-Methods", "POST")
-//         w.Header().Add("Access-Control-Allow-Headers", "content-type")
-//         w.Header().Add("Access-Control-Max-Age", "86400")
-//         fmt.Println("handled preflight")
-//         return
-//     }
-//
-//     w.Header().Set("Access-Control-Allow-Origin", "*")
-// }
-
 var state = State{false, false, false, false}
 
 func main() {
