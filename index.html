@@ -1,28 +1,42 @@
+<!DOCTYPE html>
 <html>
 
 <head>
     <title>PC Controller</title>
     <script src="index.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 
 <body>
-    <div>
-        PC is <span id="pc_state"></span>
-        <button id="pc_button">
-            Turn on pc
-        </button>
+    <main>
+        <div>
+            PC <code>homelab-arch</code> is&nbsp<span id="pc_state"></span>
+        </div>
+        <div>
+            <button id="pc_button">
+                Turn on pc
+            </button>
+        </div>
         <div id="pc_message" style="display: none;">
             Turning PC on...
         </div>
-    </div>
-    <div id="reset_panel" style="display: none;">
-        <button id="reset_button">
-            Send reset signal
-        </button>
+        <div>
+            <button id="pc_pwr_button">
+                Press power button
+            </button>
+        </div>
+        <div id="pc_pwr_message" style="display: none;">
+            Pressing power button...
+        </div>
+        <div>
+            <button id="reset_button" disabled>
+                Send reset signal
+            </button>
+        </div>
         <div id="reset_message" style="display: none;">
             Resetting PC...
         </div>
-    </div>
+    </main>
 
     <style>
         :root {
@@ -31,11 +45,26 @@
 
         button {
             font-size: 1rem;
+            width: 10rem;
+            height: 3rem;
         }
 
         div {
-            margin-inline: .25rem;
             margin-block: .5rem;
+        }
+
+        main {
+            margin-inline: auto;
+            width: fit-content;
+            height: 100svh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body {
+            margin: 0;
         }
     </style>
 </body>

@@ -7,12 +7,12 @@ async function main() {
     pc_state.innerText = await res.text();
 
     if (pc_state.innerText === "on") {
-        pc_button.style.display = "none"
+        pc_button.disabled = true
         pc_message.style.display = "none";
-        reset_panel.style.display = "block";
+        reset_button.disabled = false;
     } else {
-        pc_button.style.display = "inline-block"
-        reset_panel.style.display = "none";
+        pc_button.disabled = false
+        reset_button.disabled = true;
     }
 }
 
