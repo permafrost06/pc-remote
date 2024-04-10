@@ -1,6 +1,6 @@
 "use strict"
 
-const baseURL = "http://localhost:8000";
+const baseURL = window.location.origin + window.location.pathname;
 
 async function fetchWithCode(url) {
     return await fetch(url, {

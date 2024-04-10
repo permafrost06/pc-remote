@@ -22,7 +22,9 @@
     <script>
         function setCodeAndRedirect() {
             localStorage.setItem("pc-remote-secret-code", secret_code.value);
-            window.location = "http://localhost:8000";
+            window.location = (
+                window.location.origin + window.location.pathname
+            ).split("set-code")[0];
         }
 
         secret_code.value = localStorage.getItem("pc-remote-secret-code");
