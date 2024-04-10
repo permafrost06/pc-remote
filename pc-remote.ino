@@ -1,9 +1,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <WiFiClient.h>
-
-const char* ssid = "Pulse";
-const char* password = "easypassword1234";
+#include <FS.h>
 
 String serverName = "http://192.168.0.106:8000";
 String getPCOnRequestURL = serverName + "/esp/pc/check-request";
@@ -77,12 +75,57 @@ void setup() {
     digitalWrite(output4, HIGH);
     digitalWrite(output0, HIGH);
 
-    WiFi.begin(ssid, password);
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
+    if (!SPIFFS.begin()) {
+        Serial.println("spiffs could not be initialized");
+        return;
     }
-    Serial.print("\nLocal IP: ");
-    Serial.println(WiFi.localIP());
+    
+    File configFile = SPIFFS.open("/config.txt", "r");
+
+    if (!configFile) {
+        Serial.println("Failed to open file for reading");
+        return;
+    }
+
+    String config;
+    while (configFile.available()) {
+        config += char(configFile.read());
+    }
+    configFile.close();
+
+    String ssid, psk, secret;
+    String key, val;
+    bool keyRecorded = false;
+
+    for (int i = 0; i < config.length(); i++) {
+        char c = config[i];
+        if (c == '\n') {
+            if (key.equals("ssid")) {
+                ssid = val; 
+            }
+            if (key.equals("psk")) {
+                psk = val; 
+            }
+            if (key.equals("secretkey")) {
+                secret = val; 
+            }
+            key = "";
+            val = "";
+            keyRecorded = false;
+            continue;
+        }
+        if (c == '=') {
+            keyRecorded = true;
+            continue;
+        }
+        if (keyRecorded) {
+            val += c;
+        } else {
+            key += c;
+        }
+    }
+
+    WiFi.begin(ssid, psk);
 }
 
 void loop() {
@@ -125,3 +168,4 @@ void loop() {
     
     lastTime = millis();
 }
+

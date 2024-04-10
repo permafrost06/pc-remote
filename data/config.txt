@@ -1,0 +1,4 @@
+ssid=WIFI_SSID
+psk=WIFI_PASSWORD
+secretkey=SECRET_AUTH_KEY
+
