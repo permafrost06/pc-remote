@@ -1,6 +1,6 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
-#include <WiFiClient.h>
+#include <WiFiClientSecureBearSSL.h>
 #include <FS.h>
 
 String ssid, psk, secret, baseURL;
@@ -16,16 +16,19 @@ String markPCOffURL = "/esp/pc/mark-as-off";
 unsigned long lastTime = 0;
 unsigned long timerDelay = 2000;
 
-WiFiClient client;
-HTTPClient http;
-
 const int output4 = 4;
 const int output0 = 0;
 const int input5 = 5;
 
 String getPayload(String endpoint) {
-    http.begin(client, endpoint.c_str());
-    http.GET();
+    std::unique_ptr<BearSSL::WiFiClientSecure>client(new BearSSL::WiFiClientSecure);
+    client->setInsecure();
+
+    HTTPClient http;
+
+    http.begin(*client, endpoint);
+    int i = http.GET();
+    Serial.println(i);
     String payload = http.getString();
     http.end();
     return payload;
@@ -169,5 +172,7 @@ void loop() {
     }
     
     lastTime = millis();
+
+    Serial.println(baseURL);
 }
 
