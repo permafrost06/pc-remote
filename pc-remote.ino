@@ -27,8 +27,8 @@ String getPayload(String endpoint) {
     HTTPClient http;
 
     http.begin(*client, endpoint);
-    int i = http.GET();
-    Serial.println(i);
+    http.addHeader("Secret-Code", secret);
+    http.GET();
     String payload = http.getString();
     http.end();
     return payload;
