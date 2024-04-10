@@ -3,15 +3,15 @@
 #include <WiFiClient.h>
 #include <FS.h>
 
-String serverName = "http://192.168.0.106:8000";
-String getPCOnRequestURL = serverName + "/esp/pc/check-request";
-String markReqFulfilledURL = serverName + "/esp/pc/request-fulfilled";
-String getResetRequestURL = serverName + "/esp/pc/check-reset-request";
-String markResetReqFulfilledURL = serverName + "/esp/pc/reset-request-fulfilled";
-String getPowerButtonRequestURL = serverName + "/esp/pc/check-power-button-request";
-String markPowerButtonReqFulfilledURL = serverName + "/esp/pc/power-button-request-fulfilled";
-String markPCOnURL = serverName + "/esp/pc/mark-as-on";
-String markPCOffURL = serverName + "/esp/pc/mark-as-off";
+String ssid, psk, secret, baseURL;
+String getPCOnRequestEndpoint = "/esp/pc/check-request";
+String markReqFulfilledEndpoint = "/esp/pc/request-fulfilled";
+String getResetRequestEndpoint = "/esp/pc/check-reset-request";
+String markResetReqFulfilledEndpoint = "/esp/pc/reset-request-fulfilled";
+String getPowerButtonRequestEndpoint = "/esp/pc/check-power-button-request";
+String markPowerButtonReqFulfilledEndpoint = "/esp/pc/power-button-request-fulfilled";
+String markPCOnURL = "/esp/pc/mark-as-on";
+String markPCOffURL = "/esp/pc/mark-as-off";
 
 unsigned long lastTime = 0;
 unsigned long timerDelay = 2000;
@@ -93,7 +93,6 @@ void setup() {
     }
     configFile.close();
 
-    String ssid, psk, secret;
     String key, val;
     bool keyRecorded = false;
 
@@ -108,6 +107,9 @@ void setup() {
             }
             if (key.equals("secretkey")) {
                 secret = val; 
+            }
+            if (key.equals("baseurl")) {
+                baseURL = val; 
             }
             key = "";
             val = "";
@@ -138,32 +140,32 @@ void loop() {
         return;
     }
 
-    String message = getPayload(serverName + "/esp/pc/mark-as-" + getCurrentPCState());
+    String message = getPayload(baseURL + "/esp/pc/mark-as-" + getCurrentPCState());
     Serial.println(message);
     Serial.print("input5 - pc state: ");
     Serial.println(digitalRead(input5));
     
-    bool turnOnReq = getPayloadAsBool(getPCOnRequestURL);
-    Serial.println("Turn on requested: " + turnOnReq);
+    bool turnOnReq = getPayloadAsBool(baseURL + getPCOnRequestEndpoint);
+    Serial.println("Turn on requested: " + String(turnOnReq));
     if (turnOnReq && digitalRead(input5)) {
         turnOnPC();
-        Serial.println(getPayload(markReqFulfilledURL));
+        Serial.println(getPayload(baseURL + markReqFulfilledEndpoint));
     }
 
     if (!digitalRead(input5)) {
-        bool resetReq = getPayloadAsBool(getResetRequestURL);
-        Serial.println("Reset requested: " + resetReq);
+        bool resetReq = getPayloadAsBool(baseURL + getResetRequestEndpoint);
+        Serial.println("Reset requested: " + String(resetReq));
         if (resetReq && !digitalRead(input5)) {
             resetPC();
-            Serial.println(getPayload(markResetReqFulfilledURL));
+            Serial.println(getPayload(baseURL + markResetReqFulfilledEndpoint));
         }
     }
 
-    bool powerButtonReq = getPayloadAsBool(getPowerButtonRequestURL);
-    Serial.println("Power button press requested: " + powerButtonReq);
+    bool powerButtonReq = getPayloadAsBool(baseURL + getPowerButtonRequestEndpoint);
+    Serial.println("Power button press requested: " + String(powerButtonReq));
     if (powerButtonReq) {
         pressPowerButton();
-        Serial.println(getPayload(markPowerButtonReqFulfilledURL));
+        Serial.println(getPayload(baseURL + markPowerButtonReqFulfilledEndpoint));
     }
     
     lastTime = millis();

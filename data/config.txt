@@ -1,4 +1,5 @@
 ssid=WIFI_SSID
 psk=WIFI_PASSWORD
 secretkey=SECRET_AUTH_KEY
+baseurl=http://192.168.0.106:8000
 
