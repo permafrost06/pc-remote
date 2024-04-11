@@ -1,4 +1,4 @@
-module github.com/permafrost06/pc-controller
+module github.com/permafrost06/pc-remote
 
 go 1.22.1
 
